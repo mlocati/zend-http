@@ -273,6 +273,9 @@ class Socket implements HttpAdapter, StreamInterface
             if ($secure || $this->config['sslusecontext']) {
                 if ($this->config['ssltransport'] && isset(static::$sslCryptoTypes[$this->config['ssltransport']])) {
                     $sslCryptoMethod = static::$sslCryptoTypes[$this->config['ssltransport']];
+                    if ($sslCryptoMethod === STREAM_CRYPTO_METHOD_SSLv23_CLIENT && version_compare(PHP_VERSION, '5.6.0') >= 0 && version_compare(PHP_VERSION, '5.6.6') <= 0) {
+                        $sslCryptoMethod = STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+                    }
                 } else {
                     $sslCryptoMethod = STREAM_CRYPTO_METHOD_SSLv3_CLIENT;
                 }
